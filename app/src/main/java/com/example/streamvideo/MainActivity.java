@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textureView = (TextureView) findViewById(R.id.texture);
-
+        System.out.println("Whats up texturview? oncreate  "+ textureView);
 
     textureView.setSurfaceTextureListener(surfaceTextureListener);
 
@@ -89,11 +89,20 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    startWebsocket();
-                } catch (CameraAccessException e) {
-                    e.printStackTrace();
-                }
+                    final Handler handler = new Handler();
+                    Runnable runnable = new Runnable()
+                    {
+                        public void run()
+                        {
+                            try {
+                                startWebsocket();
+                            } catch (CameraAccessException e) {
+                                e.printStackTrace();
+                            }
+                            handler.postDelayed(this, 5000);
+                        }
+                    };
+                    runnable.run();
             }
         });
     }
@@ -128,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
 
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
+            System.out.println("Inside Open Camera; Height = "+imageDimension.getHeight()+", Width ="+imageDimension.getWidth());
 
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -178,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
+   /* final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
@@ -190,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    };
+    };*/
 
     private void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("Camera Background");
@@ -209,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startCameraPreview() throws CameraAccessException {
         SurfaceTexture texture = textureView.getSurfaceTexture();
+        System.out.println("Inside start Camera preview; Height = "+imageDimension.getHeight()+", Width ="+imageDimension.getWidth());
         texture.setDefaultBufferSize(imageDimension.getWidth(),imageDimension.getHeight());
 
         Surface surface = new Surface(texture);
@@ -251,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startBackgroundThread();
+
         if (textureView.isAvailable()){
             openCamera();
         }
@@ -292,7 +304,11 @@ public class MainActivity extends AppCompatActivity {
             width = jpegSizes[0].getWidth();
             height = jpegSizes[0].getHeight();
         }
+        System.out.println("Whats up texturview? websocket "+ textureView);
+
             SurfaceTexture texture = textureView.getSurfaceTexture();
+            System.out.println("Inside start start web socket; Height = "+imageDimension.getHeight()+", Width ="+imageDimension.getWidth());
+
             texture.setDefaultBufferSize(imageDimension.getWidth(),imageDimension.getHeight());
 
             Surface surface = new Surface(texture);
@@ -301,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
         List<Surface> outputSurfaces = new ArrayList<> (2);
-        outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
+        outputSurfaces.add(surface);
 
         final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
         captureBuilder.set(CaptureRequest.CONTROL_MODE,CameraMetadata.CONTROL_MODE_AUTO);
@@ -317,11 +333,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onImageAvailable(ImageReader reader) {
                 Image image = null;
+                System.out.println("Image is available?????");
 
                 image = reader.acquireLatestImage();
                 ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                 byte[] bytes = new byte[buffer.capacity()];
                 buffer.get(bytes);
+                System.out.println("Here is the bytes of the image "+buffer.get(bytes));
 
                 try{
                     send(bytes);

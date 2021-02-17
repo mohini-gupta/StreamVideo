@@ -6,12 +6,16 @@ currently in use by the company for signing up new clients and a offers page con
 
 ### Dependencies:
 For React Navigation, the libraries that needs to be installed from npm:
+
+
 '''
 npm install @react-navigation/native react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
 npm install @react-navigation/stack
 '''
 
 Then, in your project directory run:
+
+
 '''
 expo install @react-navigation/native react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
  expo install @react-navigation/stack 
@@ -21,9 +25,13 @@ expo install expo-app-loading
 ### How to run:
 With all of the above mentioned dependencies installed on your machine open command prompt(or any preffered terminal) in the directory of the 
 project and write.
+
+
 '''
 expo start
 '''
+
+
 This will run the application in its current version.
 
 ### Support:

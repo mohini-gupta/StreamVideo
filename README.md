@@ -20,9 +20,9 @@ project and write '''expo start'''. This will run the application in its current
 
 ### Support:
 If you need any extra information or if you have questions about the project you can contact us at:
-    petyrhadjiev@gmail.com
-    mohini.gupta@mail.polimi.it
-    marco@mindtheflat.co.uk
+- petyrhadjiev@gmail.com
+- mohini.gupta@mail.polimi.it
+- marco@mindtheflat.co.uk
 
 ### Website Link:
-You can go visit the [Mind the Flat]: (https://www.mindtheflat.co.uk/) website. Have a look!
+You can go visit the [Mind the Flat](https://www.mindtheflat.co.uk/) website. Have a look!
